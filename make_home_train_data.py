@@ -72,7 +72,7 @@ def character_tagging(input_file, train_file, test_file):
                 elif obj_begin_tag and match_io is not None and match_type is not None:
                     if len(homeList) == 2:
                         train_data.write(obj_list[0] + "\t" + word[1] + "\tB-OBJECT\n")
-                        train_data.write(word[0] + "\t" + word[1] + "\tE-OBJECT\n")
+                        train_data.write(word[0] + "\t" + word[1] + "\tI-OBJECT\n")
                         obj_list = []
                         obj_begin_tag = False
                     else:
@@ -81,7 +81,7 @@ def character_tagging(input_file, train_file, test_file):
                     if len(obj_list) == 2:
                         train_data.write(obj_list[0] + "\t" + word[1] + "\tB-OBJECT\n")
                         train_data.write(obj_list[1] + "\t" + word[1] + "\tI-OBJECT\n")
-                        train_data.write(word[0] + "\t" + word[1] + "\tE-OBJECT\n")
+                        train_data.write(word[0] + "\t" + word[1] + "\tI-OBJECT\n")
                     obj_list = []
                     obj_begin_tag = False
                 else:
@@ -90,13 +90,19 @@ def character_tagging(input_file, train_file, test_file):
                         for obj in obj_list:
                             train_data.write(obj + "\t" + word[1] + "\tO\n")
                         obj_list = []
-                    train_data.write(word[0] + "\t" + word[1] + "\tO\n")
+                    if word[0] == '。':
+                        train_data.write(word[0] + "\t" + word[1] + "\tO\n\n")
+                    else:
+                        train_data.write(word[0] + "\t" + word[1] + "\tO\n")
         else:
             # 生成测试数据
             test_data.write("index" + str(index) + "\t" + "m" + "\tO\n")
             for word in data['text']:
                 if word[1] is not None:
-                    test_data.write(word[0] + "\t" + word[1] + "\tO\n")
+                    if word[0] == '。':
+                        test_data.write(word[0] + "\t" + word[1] + "\tO\n\n")
+                    else:
+                        test_data.write(word[0] + "\t" + word[1] + "\tO\n")
                 else:
                     continue
         test_data.write("\n")
